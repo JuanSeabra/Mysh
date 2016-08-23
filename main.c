@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
-
+//TESTE
 char* ler_linha(){
 	char *linha = NULL;
 	size_t buffer_size = 0;
