@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 char* ler_linha(){
 	char *linha = NULL;
@@ -56,7 +57,7 @@ char *comandos[] = {
 	"cd",
 	"help",
 	"exit",
-	"echo"
+	"pwd"
 };
 
 int ms_cd(char **args){
@@ -74,7 +75,7 @@ int ms_help(char **args){
 	int i;
 	printf("Mysh!\n");
 	printf("comandos implementados por padrão:\n");
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < 4; i++) {
 		printf("%s\n",comandos[i]);
 	}
 	return 1;
@@ -82,6 +83,13 @@ int ms_help(char **args){
 
 int ms_exit(char **args){
 	return 0;
+}
+
+int ms_pwd(char **args){
+	char cwd[1024];
+	getcwd(cwd,sizeof(cwd));
+	printf("%s\n",cwd);
+	return 1;
 }
 /*
 int ms_echo(char **args){
@@ -105,19 +113,43 @@ int ms_echo(char **args){
 int (*comandos_func[]) (char**) = {
 	&ms_cd,
 	&ms_help,
-	&ms_exit
-//	&ms_echo
+	&ms_exit,
+	&ms_pwd
 };
+
+int mysh_launch(char **args){
+	pid_t pid, wpid;
+	int status;
+
+	pid = fork();
+	if(!pid){
+		//filho
+		if(execvp(args[0],args) == -1){
+			perror("mysh");
+		}
+		exit(EXIT_FAILURE);
+	} else if (pid < 0){
+		//erro
+		perror("mysh");
+	} else {
+		//pai
+		do {
+			wpid = waitpid(pid, &status, WUNTRACED);
+		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
+	}
+	return 1;
+}
 
 int mysh_exec(char **args){
 	int i;
 
 	if(!args[0]) return 1;
 
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < 4; i++) {
 		if(strcmp(args[0],comandos[i]) == 0)
 			return (*comandos_func[i])(args);
 	}
+	return mysh_launch(args);
 }
 
 void mysh_loop(){
