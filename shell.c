@@ -1,12 +1,5 @@
-<<<<<<< HEAD
 #include "shell.h"
-=======
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
-//TESTE
+
 char* ler_linha(){
 	char *linha = NULL;
 	size_t buffer_size = 0;
@@ -14,9 +7,6 @@ char* ler_linha(){
 	printf("linha lida %s\n",linha); 
 	return linha;
 }
-
-#define ARGS_SIZE 64
-#define DELIM " \n"
 
 char** split_linha(char *linha){
 	int posicao = 0;
@@ -64,9 +54,11 @@ char *comandos[] = {
 };
 
 int ms_cd(char **args){
+	//TODO mapear /home/user em ~
 	if (!args[1]) {
 		fprintf(stderr,"esse comando espera argumentos!\n");
 	} else {
+		//TODO args[1][1] == '~'
 		if (chdir(args[1])) {
 			fprintf(stderr,"erro ao mudar diretorio\n");
 		} 
@@ -94,6 +86,14 @@ int ms_pwd(char **args){
 	printf("%s\n",cwd);
 	return 1;
 }
+
+int (*comandos_func[]) (char**) = {
+	&ms_cd,
+	&ms_help,
+	&ms_exit,
+	&ms_pwd
+};
+
 /*
 int ms_echo(char **args){
 	int i = 1;
@@ -113,12 +113,6 @@ int ms_echo(char **args){
 
 }
 */
-int (*comandos_func[]) (char**) = {
-	&ms_cd,
-	&ms_help,
-	&ms_exit,
-	&ms_pwd
-};
 
 int mysh_launch(char **args){
 	pid_t pid, wpid;
@@ -164,6 +158,7 @@ void mysh_loop(){
 		char cwd[1024];
 		getcwd(cwd,sizeof(cwd));
 		printf("%s $> ",cwd);
+		// TODO auto complete aqui!!!!!! 
 		linha = ler_linha();
 		args = split_linha(linha);
 		status = mysh_exec(args);
@@ -172,10 +167,4 @@ void mysh_loop(){
 		free(args);
 	} while (status);
 }
->>>>>>> c5b7f531581c52cb9b5a3964c732e1517f012cc5
 
-int main(int argc, const char *argv[])
-{
-	mysh_loop();
-	return 0;
-}
