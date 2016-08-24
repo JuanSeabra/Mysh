@@ -3,7 +3,8 @@
 char* ler_linha(){
 	char *linha = NULL;
 	size_t buffer_size = 0;
-	getline(&linha, &buffer_size,stdin);
+	//getline(&linha, &buffer_size,stdin);
+	linha = readline(shellPrompt());
 	//printf("linha lida %s\n",linha); 
 	return linha;
 }
@@ -38,11 +39,11 @@ char** split_linha(char *linha){
 
 	int i = 0;
 	//printf("args split: ");
-	while (args[i] != NULL) {
-		printf("\"%s\" ",args[i]);
-		i++;
-	}
-	printf("\n");
+	//while (args[i] != NULL) {
+	//	printf("\"%s\" ",args[i]);
+	//	i++;
+	//}
+	//printf("\n");
 	return args;
 }
 
@@ -150,11 +151,18 @@ int mysh_exec(char **args){
 	return mysh_launch(args);
 }
 
-void shellPrompt(){
+char* shellPrompt(){
 	char hostn[1204] = "";
 	gethostname(hostn, sizeof(hostn));
 	char cwd[1024];
-	printf("%s@%s %s > ", getenv("LOGNAME"), hostn, getcwd(cwd, sizeof(cwd)));
+	char *prompt = (char*) malloc(sizeof(char)*1024);
+	//printf("%s@%s %s > ", getenv("LOGNAME"), hostn, getcwd(cwd, sizeof(cwd)));
+	strcpy(prompt, getenv("LOGNAME"));
+	strcat(prompt, "@");
+	strcat(prompt, hostn);
+	strcat(prompt, getcwd(cwd, sizeof(cwd)));
+	strcat(prompt, "\n$ ");
+	return prompt;
 }
 
 //TODO pipe
@@ -168,10 +176,10 @@ void mysh_loop(){
 
 	do {
 		char cwd[1024];
-		shellPrompt();
+		
 		// TODO auto complete aqui!!!!!! 
 		linha = ler_linha();
-		fprintf(fhistorico,"%s",linha);
+		fprintf(fhistorico,"%s\n",linha);
 		args = split_linha(linha);
 		status = mysh_exec(args);
 

@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 #define ARGS_SIZE 64
 #define DELIM " \n"
@@ -27,7 +29,7 @@ int mysh_launch(char **args);
 //diferencia comandos nativos do sistema dos nativos do shell executando o correto para cada situação
 int mysh_exec(char **args);
 //exibe o prompt
-void shellPrompt();
+char* shellPrompt();
 //loop principal
 void mysh_loop();
 
