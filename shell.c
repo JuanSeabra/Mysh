@@ -54,13 +54,32 @@ char *comandos[] = {
 };
 
 int ms_cd(char **args){
-	//TODO mapear /home/user em ~
-	//TODO cd em branco volta pra home
+	int i = 1;
+	char pasta_home[1024];
+	char pasta_destino[1024];
+	char arg[1024];
+	char letra;
+	strcpy(pasta_home,"/home/");
+	strcat(pasta_home,getenv("LOGNAME"));
+	
 	if (!args[1]) {
-		fprintf(stderr,"esse comando espera argumentos!\n");
+			if (chdir(pasta_home)) {
+				fprintf(stderr,"erro ao mudar diretorio\n");
+			} 
+	
 	} else {
-		//TODO args[1][1] == '~'
-		if (chdir(args[1])) {
+		
+		if(args[1][0] == '~') {
+			strcpy(pasta_destino,pasta_home);
+			while (args[1][i]) {
+				letra = args[1][i];
+				strcat(pasta_destino,&letra);
+				i++;
+			}
+			if (chdir(pasta_destino)) {
+				fprintf(stderr,"erro ao mudar diretorio\n");
+			}
+		} else if (chdir(args[1])) {
 			fprintf(stderr,"erro ao mudar diretorio\n");
 		} 
 	}
@@ -131,14 +150,14 @@ int mysh_exec(char **args){
 	return mysh_launch(args);
 }
 
-
-
 void shellPrompt(){
 	char hostn[1204] = "";
 	gethostname(hostn, sizeof(hostn));
 	char cwd[1024];
 	printf("%s@%s %s > ", getenv("LOGNAME"), hostn, getcwd(cwd, sizeof(cwd)));
 }
+
+//TODO pipe
 
 void mysh_loop(){
 	char *linha;

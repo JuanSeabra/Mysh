@@ -26,6 +26,8 @@ int ms_pwd(char **args);
 int mysh_launch(char **args);
 //diferencia comandos nativos do sistema dos nativos do shell executando o correto para cada situação
 int mysh_exec(char **args);
+//exibe o prompt
+void shellPrompt();
 //loop principal
 void mysh_loop();
 
