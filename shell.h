@@ -10,14 +10,23 @@
 #define ARGS_SIZE 64
 #define DELIM " \n"
 
+//Lê a linha passada pelo usuário
 char* ler_linha();
+//quebra a linha usando espaço como separador
 char** split_linha(char *linha);
+//comando cd nativo
 int ms_cd(char **args);
+//comando help nativo
 int ms_help(char **args);
+//comando exit nativo
 int ms_exit(char **args);
+//comando pwd nativo
 int ms_pwd(char **args);
+//executa comandos nativos do sistema usando exec
 int mysh_launch(char **args);
+//diferencia comandos nativos do sistema dos nativos do shell executando o correto para cada situação
 int mysh_exec(char **args);
+//loop principal
 void mysh_loop();
 
 #endif

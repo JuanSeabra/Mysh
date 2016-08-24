@@ -4,7 +4,7 @@ char* ler_linha(){
 	char *linha = NULL;
 	size_t buffer_size = 0;
 	getline(&linha, &buffer_size,stdin);
-	printf("linha lida %s\n",linha); 
+	//printf("linha lida %s\n",linha); 
 	return linha;
 }
 
@@ -37,7 +37,7 @@ char** split_linha(char *linha){
 	args[posicao] = NULL;
 
 	int i = 0;
-	printf("args split: ");
+	//printf("args split: ");
 	while (args[i] != NULL) {
 		printf("\"%s\" ",args[i]);
 		i++;
@@ -55,6 +55,7 @@ char *comandos[] = {
 
 int ms_cd(char **args){
 	//TODO mapear /home/user em ~
+	//TODO cd em branco volta pra home
 	if (!args[1]) {
 		fprintf(stderr,"esse comando espera argumentos!\n");
 	} else {
@@ -94,25 +95,6 @@ int (*comandos_func[]) (char**) = {
 	&ms_pwd
 };
 
-/*
-int ms_echo(char **args){
-	int i = 1;
-	if(!args[1]) return 1;
-	while (args[i]) {
-		if (i == 1 && args[i+1]){
-			if(args[1][0] != '\"'){
-				fprintf(stderr,"sintaxe incorreta!");
-			}
-			printf("\s ",args[1][1]);
-		} else if(args[i+1]) {
-			printf("%s ",args[i]);
-		} else {
-			
-		}
-	}
-
-}
-*/
 
 int mysh_launch(char **args){
 	pid_t pid, wpid;
@@ -149,17 +131,28 @@ int mysh_exec(char **args){
 	return mysh_launch(args);
 }
 
+
+
+void shellPrompt(){
+	char hostn[1204] = "";
+	gethostname(hostn, sizeof(hostn));
+	char cwd[1024];
+	printf("%s@%s %s > ", getenv("LOGNAME"), hostn, getcwd(cwd, sizeof(cwd)));
+}
+
 void mysh_loop(){
 	char *linha;
 	char **args;
 	int status;
+	FILE *fhistorico;
+	fhistorico = fopen("mysh_history","w+");
 
 	do {
 		char cwd[1024];
-		getcwd(cwd,sizeof(cwd));
-		printf("%s $> ",cwd);
+		shellPrompt();
 		// TODO auto complete aqui!!!!!! 
 		linha = ler_linha();
+		fprintf(fhistorico,"%s",linha);
 		args = split_linha(linha);
 		status = mysh_exec(args);
 
