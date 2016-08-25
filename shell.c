@@ -5,6 +5,11 @@ char* ler_linha(){
 	size_t buffer_size = 0;
 	//getline(&linha, &buffer_size,stdin);
 	linha = readline(shellPrompt());
+
+	if (linha != NULL && linha[0] != 0){
+		add_history(linha);
+	}
+
 	//printf("linha lida %s\n",linha); 
 	return linha;
 }
