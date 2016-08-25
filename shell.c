@@ -1,6 +1,6 @@
 #include "shell.h"
 
-char* all_commands[3998];
+char* all_commands[4000];
 
 void getAllCommands(){
 	FILE *fcomandos;
@@ -15,7 +15,9 @@ void getAllCommands(){
 		all_commands[i] = atual;
 		printf("%s\n",all_commands[i]);
 		i++;
-		if(i == 10) break;
+		atual = (char*) malloc(sizeof(char)*50);
+
+	//	if(i == 10) break;
 	}
 	all_commands[i] = NULL;
 	printf("%p\n",all_commands[i]);
@@ -48,7 +50,7 @@ char* mysh_generator(const char *text, int state){
 		len = strlen(text);
 	}
 
-	while ((com = com_names[list_index++])) {
+	while ((com = all_commands[list_index++])) {
 		if (strncmp(com, text, len) == 0) {
 			return strdup(com);
 		}
@@ -230,7 +232,7 @@ char* shellPrompt(){
 	return prompt;
 }
 
-//TODO pipe
+//TODO pipei
 
 void mysh_loop(){
 	char *linha;
@@ -238,6 +240,11 @@ void mysh_loop(){
 	int status;
 	FILE *fhistorico;
 	fhistorico = fopen("mysh_history","a");
+	int i;
+
+	for (i = 0; i < 10; i++) {
+		printf("-- %s\n",all_commands[i]);
+	}
 
 	do {
 		char cwd[1024];
