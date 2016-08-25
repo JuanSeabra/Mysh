@@ -5,6 +5,10 @@ char* ler_linha(){
 	size_t buffer_size = 0;
 	//getline(&linha, &buffer_size,stdin);
 	linha = readline(shellPrompt());
+
+	if (linha[0] != 0){
+        add_history(linha);
+    }
 	//printf("linha lida %s\n",linha); 
 	return linha;
 }
@@ -172,14 +176,15 @@ void mysh_loop(){
 	char **args;
 	int status;
 	FILE *fhistorico;
-	fhistorico = fopen("mysh_history","w+");
+	fhistorico = fopen("mysh_history","a");
 
 	do {
 		char cwd[1024];
 		
 		// TODO auto complete aqui!!!!!! 
 		linha = ler_linha();
-		fprintf(fhistorico,"%s\n",linha);
+		if(linha[0])
+			fprintf(fhistorico,"%s\n",linha);
 		args = split_linha(linha);
 		status = mysh_exec(args);
 
