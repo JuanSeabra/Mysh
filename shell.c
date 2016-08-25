@@ -1,8 +1,66 @@
 #include "shell.h"
 
+char* all_commands[3998];
+
+void getAllCommands(){
+	FILE *fcomandos;
+	char *atual;
+	int i = 0;
+	int len;
+	fcomandos = fopen("all_commands","r");
+	atual = (char*) malloc(sizeof(char)*50);
+	while(fgets(atual,50,fcomandos)){
+		len = strlen(atual);
+		atual[len-1]='\0';
+		all_commands[i] = atual;
+		printf("%s\n",all_commands[i]);
+		i++;
+		if(i == 10) break;
+	}
+	all_commands[i] = NULL;
+	printf("%p\n",all_commands[i]);
+	printf("todos os comandos: %d\n",i);
+	fclose(fcomandos);
+}
+
+
+char* com_names[] = {
+	"cd",
+	"pwd",
+	"exit",
+	"pidof",
+	"testestesteste",
+	NULL
+};
+
+char** mysh_completion(const char *text, int start, int end){
+	rl_attempted_completion_over = 0;
+	return rl_completion_matches(text, mysh_generator);
+}
+
+char* mysh_generator(const char *text, int state){
+
+	static int list_index, len;
+	char *com;
+
+	if (!state) {
+		list_index = 0;
+		len = strlen(text);
+	}
+
+	while ((com = com_names[list_index++])) {
+		if (strncmp(com, text, len) == 0) {
+			return strdup(com);
+		}
+	}
+
+	return NULL;
+}
+
 char* ler_linha(){
 	char *linha = NULL;
 	size_t buffer_size = 0;
+	rl_attempted_completion_function = mysh_completion;
 	//getline(&linha, &buffer_size,stdin);
 	linha = readline(shellPrompt());
 
@@ -68,14 +126,14 @@ int ms_cd(char **args){
 	char letra;
 	strcpy(pasta_home,"/home/");
 	strcat(pasta_home,getenv("LOGNAME"));
-	
+
 	if (!args[1]) {
-			if (chdir(pasta_home)) {
-				fprintf(stderr,"erro ao mudar diretorio\n");
-			} 
-	
+		if (chdir(pasta_home)) {
+			fprintf(stderr,"erro ao mudar diretorio\n");
+		} 
+
 	} else {
-		
+
 		if(args[1][0] == '~') {
 			strcpy(pasta_destino,pasta_home);
 			while (args[1][i]) {
@@ -166,6 +224,7 @@ char* shellPrompt(){
 	strcpy(prompt, getenv("LOGNAME"));
 	strcat(prompt, "@");
 	strcat(prompt, hostn);
+	strcat(prompt, ":");
 	strcat(prompt, getcwd(cwd, sizeof(cwd)));
 	strcat(prompt, "\n$ ");
 	return prompt;
@@ -182,7 +241,7 @@ void mysh_loop(){
 
 	do {
 		char cwd[1024];
-		
+
 		// TODO auto complete aqui!!!!!! 
 		linha = ler_linha();
 		if(linha[0])
@@ -193,5 +252,6 @@ void mysh_loop(){
 		free(linha);
 		free(args);
 	} while (status);
+	fclose(fhistorico);
 }
 

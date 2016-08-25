@@ -12,6 +12,12 @@
 #define ARGS_SIZE 64
 #define DELIM " \n"
 
+
+//lê e armazena a lista de todos os commandos possíveis do sistema
+void getAllCommands();
+//funções usadas pelo readline
+char** mysh_completion(const char *text, int start, int end);
+char* mysh_generator(const char *text, int state);
 //Lê a linha passada pelo usuário
 char* ler_linha();
 //quebra a linha usando espaço como separador
