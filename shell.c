@@ -13,20 +13,20 @@ void getAllCommands(){
 		len = strlen(atual);
 		atual[len-1]='\0';
 		all_commands[i] = atual;
-		printf("%s\n",all_commands[i]);
+	//	printf("%s\n",all_commands[i]);
 		i++;
 		atual = (char*) malloc(sizeof(char)*50);
 
 		//	if(i == 10) break;
 	}
 	all_commands[i] = NULL;
-	printf("%p\n",all_commands[i]);
-	printf("todos os comandos: %d\n",i);
+//	printf("%p\n",all_commands[i]);
+//	printf("todos os comandos: %d\n",i);
 	fclose(fcomandos);
 }
 
 
-char* com_names[] = {
+/*char* com_names[] = {
 	"cd",
 	"pwd",
 	"exit",
@@ -34,7 +34,7 @@ char* com_names[] = {
 	"testestesteste",
 	NULL
 };
-
+*/
 char** mysh_completion(const char *text, int start, int end){
 	rl_attempted_completion_over = 0;
 	return rl_completion_matches(text, mysh_generator);
@@ -308,14 +308,12 @@ void mysh_loop(){
 	fhistorico = fopen("mysh_history","a");
 	int i;
 
-	for (i = 0; i < 10; i++) {
-		printf("-- %s\n",all_commands[i]);
-	}
+//	for (i = 0; i < 10; i++) {
+//		printf("-- %s\n",all_commands[i]);
+//	}
 
 	do {
 		char cwd[1024];
-
-		// TODO auto complete aqui!!!!!! 
 		linha = ler_linha();
 		if(linha[0])
 			fprintf(fhistorico,"%s\n",linha);
