@@ -1,3 +1,11 @@
+/*
+	Equipe: 
+	Gabriel Saldanha
+	Nadny Dantas
+	Victoria Aires
+	Waldomiro Seabra
+*/
+
 #include "shell.h"
 
 char* all_commands[4000];
@@ -294,11 +302,9 @@ char* shellPrompt(){
 	strcat(prompt, hostn);
 	strcat(prompt, ":");
 	strcat(prompt, getcwd(cwd, sizeof(cwd)));
-	strcat(prompt, "\n$ ");
+	strcat(prompt, "\n\033[1m\033[31m$");
 	return prompt;
 }
-
-//TODO pipei
 
 void mysh_loop(){
 	char *linha;
