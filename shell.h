@@ -35,6 +35,10 @@ int ms_exit(char **args);
 int ms_pwd(char **args);
 //executa comandos nativos do sistema usando exec
 int mysh_launch(char **args);
+//Implementa pipe
+int mysh_pipe(char **args, int pos);
+//implementa redirecionamento
+int redirecionamento(char **args, int pos);
 //diferencia comandos nativos do sistema dos nativos do shell executando o correto para cada situação
 int mysh_exec(char **args);
 //exibe o prompt
