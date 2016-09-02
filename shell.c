@@ -302,7 +302,7 @@ char* shellPrompt(){
 	strcat(prompt, hostn);
 	strcat(prompt, ":");
 	strcat(prompt, getcwd(cwd, sizeof(cwd)));
-	strcat(prompt, "\n\033[1m\033[31m$");
+	strcat(prompt, "\n$ ");
 	return prompt;
 }
 
