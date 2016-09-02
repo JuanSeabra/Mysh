@@ -247,14 +247,15 @@ int mysh_pipe(char **args, int pos){
 		close(pfds[0]); 
 		execvp(args[0], args);
 	} else if (pid2 = fork() == 0){
+		waitpid(pid,NULL,0);
 		close(0);       
 		dup(pfds[0]);   
 		close(pfds[1]); 
 		execvp(args[pos+1],&args[pos+1]);
-	} else {
-		waitpid(pid,NULL,0);
+	} 
+		//waitpid(pid,NULL,0);
 		waitpid(pid2,NULL,0);
-	}
+	
 	return 1;
 }
 
